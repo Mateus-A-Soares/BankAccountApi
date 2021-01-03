@@ -9,12 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import br.com.zup.BankAccountApi.service.AccountService;
+import br.com.zup.BankAccountApi.validation.constraints.Unique;
 
 /**
  * 
@@ -37,16 +41,19 @@ public class Account {
 	@Column(unique = true, nullable = false, length = 125)
 	@Email
 	@NotBlank
+    @Unique(service = AccountService.class, fieldName = "email", message = "Email duplicado")
 	private String email;
 	
 	@Column(unique = true, nullable = false, length = 125)
 	@CPF(message = "Número do CPF inválido")
 	@NotBlank
+	@Unique(service = AccountService.class, fieldName = "cpf", message = "CPF duplicado")
 	private String cpf;
 	
 	@Column(name = "dateOfBirth", nullable = false)
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy")
+	@NotNull(message = "Não pode estar vazia")
 	@Past
 	private Date dateOfBirth;
 
